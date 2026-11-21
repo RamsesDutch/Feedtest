@@ -1,0 +1,875 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="feedtest-token" content="__TOKEN__" />
+    <title>FeedTest · Local test lab</title>
+    <style>
+      :root {
+        --bg: #f4f6fa;
+        --ink: #182338;
+        --muted: #66748a;
+        --line: #e0e6ef;
+        --blue: #285fe8;
+        --green: #18734c;
+        --red: #a93344;
+        --nav: #13243c;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font:
+          14px/1.5 system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+      }
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      button:disabled {
+        opacity: 0.48;
+        cursor: wait;
+      }
+      button:focus-visible,
+      input:focus-visible,
+      select:focus-visible,
+      a:focus-visible {
+        outline: 3px solid #85a9ff;
+        outline-offset: 3px;
+      }
+      .shell {
+        display: grid;
+        grid-template-columns: 228px 1fr;
+        min-height: 100vh;
+      }
+      aside {
+        background: var(--nav);
+        color: white;
+        padding: 34px 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 38px;
+      }
+      .brand {
+        font-size: 24px;
+        letter-spacing: -1px;
+        font-weight: 750;
+      }
+      .brand b {
+        background: #5686ff;
+        border-radius: 8px;
+        padding: 4px 9px;
+        margin-right: 8px;
+      }
+      .navitem {
+        padding: 11px 14px;
+        background: #253955;
+        border: 1px solid #3b4f6a;
+        border-radius: 9px;
+        font-weight: 600;
+      }
+      .aside-note {
+        color: #bac9dd;
+        font-size: 12px;
+        line-height: 1.8;
+      }
+      .aside-bottom {
+        margin-top: auto;
+        border-top: 1px solid #32445c;
+        padding-top: 18px;
+      }
+      .status-dot {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        background: #75d9b0;
+        border-radius: 50%;
+        margin-right: 7px;
+      }
+      main {
+        max-width: 1370px;
+        width: 100%;
+        padding: 35px 42px;
+        margin: auto;
+      }
+      .topline {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 24px;
+      }
+      .eyebrow {
+        font-size: 11px;
+        font-weight: 750;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 11px;
+        background: #e7edf7;
+        color: #4e617b;
+        border-radius: 20px;
+        font-size: 12px;
+      }
+      .hero {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 30px;
+        margin-bottom: 26px;
+      }
+      h1 {
+        font-size: 34px;
+        letter-spacing: -1.4px;
+        line-height: 1.2;
+        margin: 0 0 10px;
+      }
+      h2 {
+        font-size: 17px;
+        letter-spacing: -0.3px;
+        margin: 0;
+      }
+      p {
+        margin: 5px 0;
+        color: var(--muted);
+      }
+      .hero p {
+        max-width: 650px;
+      }
+      .btn {
+        border: 1px solid var(--line);
+        background: white;
+        border-radius: 7px;
+        padding: 9px 14px;
+        font-weight: 600;
+        color: var(--ink);
+        white-space: nowrap;
+      }
+      .btn.primary {
+        background: var(--blue);
+        color: white;
+        border-color: var(--blue);
+      }
+      .btn.danger {
+        color: var(--red);
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-bottom: 22px;
+      }
+      .stat,
+      .panel {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        box-shadow: 0 2px 4px #18233803;
+      }
+      .stat {
+        padding: 18px 22px;
+      }
+      .stat strong {
+        display: block;
+        font-size: 26px;
+        font-weight: 650;
+        margin: 5px 0;
+      }
+      .stat small {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1.4fr;
+        gap: 22px;
+        align-items: start;
+      }
+      .panel {
+        padding: 23px;
+      }
+      .panelhead {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 19px;
+      }
+      .step {
+        display: inline-flex;
+        background: #edf2ff;
+        color: var(--blue);
+        width: 24px;
+        height: 24px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 7px;
+        font-size: 12px;
+        margin-right: 9px;
+      }
+      label {
+        display: block;
+        font-size: 12px;
+        font-weight: 650;
+        margin: 15px 0 6px;
+      }
+      select,
+      input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccd5e3;
+        background: white;
+        border-radius: 7px;
+        color: var(--ink);
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 13px;
+      }
+      .hint {
+        font-size: 12px;
+        color: var(--muted);
+        margin: 9px 0 16px;
+      }
+      .buttons {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 18px 0 8px;
+      }
+      .capture {
+        background: #f7f9fd;
+        border: 1px solid var(--line);
+        padding: 13px;
+        border-radius: 8px;
+        font-size: 12px;
+      }
+      .capture strong {
+        display: block;
+        font-size: 13px;
+        margin-bottom: 3px;
+      }
+      .rule {
+        border: 0;
+        border-top: 1px solid var(--line);
+        margin: 23px 0;
+      }
+      .record {
+        display: grid;
+        grid-template-columns: 1fr 75px;
+        gap: 9px;
+      }
+      .small {
+        font-size: 12px;
+      }
+      .tablewrap {
+        overflow: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+      }
+      th {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--muted);
+        padding: 11px 9px;
+        background: #f8fafd;
+      }
+      td {
+        border-bottom: 1px solid #edf0f6;
+        padding: 14px 9px;
+        vertical-align: top;
+        font-size: 12px;
+      }
+      td:first-child {
+        text-transform: capitalize;
+        font-weight: 650;
+      }
+      .pass,
+      .fail {
+        font-size: 10px;
+        font-weight: 750;
+        text-transform: uppercase;
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 5px;
+      }
+      .pass {
+        background: #e7f5ed;
+        color: var(--green);
+      }
+      .fail {
+        background: #fcecee;
+        color: var(--red);
+      }
+      .empty {
+        text-align: center;
+        padding: 45px 20px;
+        color: var(--muted);
+      }
+      .empty .icon {
+        font-size: 28px;
+        margin-bottom: 8px;
+        color: #95a6c1;
+      }
+      .endpoint {
+        font:
+          12px/1.7 ui-monospace,
+          monospace;
+        overflow-wrap: anywhere;
+        background: #f4f7fc;
+        padding: 12px;
+        border-radius: 7px;
+        margin-top: 10px;
+      }
+      .endpoint[hidden] {
+        display: none;
+      }
+      .log {
+        max-height: 210px;
+        overflow: auto;
+        font:
+          11px/1.8 ui-monospace,
+          monospace;
+        background: #14253c;
+        color: #d1deef;
+        border-radius: 8px;
+        padding: 13px;
+        margin-top: 14px;
+      }
+      .log time {
+        color: #849ab7;
+        margin-right: 10px;
+      }
+      .footer {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 24px;
+        gap: 20px;
+      }
+      .error {
+        padding: 12px 16px;
+        background: #fcecee;
+        color: var(--red);
+        border: 1px solid #f0c9ce;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+      .error[hidden] {
+        display: none;
+      }
+      details {
+        font-size: 12px;
+        margin-top: 16px;
+      }
+      summary {
+        cursor: pointer;
+        color: var(--muted);
+      }
+      .history {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+      }
+      .history button {
+        font-size: 11px;
+        padding: 6px 9px;
+      }
+      .sr {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+      }
+      @media (max-width: 1050px) {
+        .shell {
+          grid-template-columns: 175px 1fr;
+        }
+        main {
+          padding: 25px;
+        }
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .hero {
+          align-items: start;
+        }
+        .hero h1 {
+          font-size: 29px;
+        }
+      }
+      @media (max-width: 650px) {
+        .shell {
+          display: block;
+        }
+        aside {
+          padding: 14px 20px;
+          display: block;
+        }
+        .navitem,
+        .aside-note,
+        .aside-bottom {
+          display: none;
+        }
+        main {
+          padding: 23px 16px;
+        }
+        .stats {
+          gap: 7px;
+        }
+        .stat {
+          padding: 12px;
+        }
+        .stat strong {
+          font-size: 21px;
+        }
+        .hero {
+          display: block;
+        }
+        .hero .btn {
+          margin-top: 14px;
+        }
+        .panel {
+          padding: 17px;
+        }
+        .footer {
+          display: block;
+        }
+        .topline {
+          margin-bottom: 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <aside>
+        <div class="brand"><b>ƒ</b>FeedTest</div>
+        <div class="navitem">◉ &nbsp; Test lab</div>
+        <div class="aside-note">
+          A repeatable environment for market-data clients.<br /><br />Kraken
+          Spot v2<br />Order book · Depth 10
+        </div>
+        <div class="aside-bottom aside-note">
+          <span class="status-dot"></span>Running on your computer<br />v0.3.1 ·
+          Local release
+        </div>
+      </aside>
+      <main>
+        <div class="topline">
+          <div class="eyebrow">Developer tools / Feed reliability</div>
+          <span class="badge" id="activity" role="status">Connecting…</span>
+        </div>
+        <div class="hero">
+          <div>
+            <h1>Break the feed.<br />Verify the recovery.</h1>
+            <p>
+              Replay a capture, introduce a fault, and see how an independent
+              client responds. Start with the synthetic demo below.
+            </p>
+          </div>
+          <button class="btn danger" id="stop">Stop operations</button>
+        </div>
+        <div class="error" id="error" role="alert" hidden></div>
+        <div class="stats">
+          <div class="stat">
+            <div class="eyebrow">Latest checks</div>
+            <strong id="passed">—</strong
+            ><small id="checks-note">Run your first test suite</small>
+          </div>
+          <div class="stat">
+            <div class="eyebrow">Capture frames</div>
+            <strong id="framecount">—</strong
+            ><small id="source">Select a recording</small>
+          </div>
+          <div class="stat">
+            <div class="eyebrow">External replay</div>
+            <strong id="replay-state">Stopped</strong
+            ><small>Local WebSocket endpoint</small>
+          </div>
+        </div>
+        <div class="grid">
+          <section class="panel">
+            <div class="panelhead">
+              <h2><span class="step">1</span>Configure a replay</h2>
+              <span class="badge">Kraken book</span>
+            </div>
+            <label for="capture">Capture</label
+            ><select id="capture"></select>
+            <div class="capture" id="capture-meta" style="margin-top: 10px">
+              Loading captures…
+            </div>
+            <label for="scenario">Failure scenario</label
+            ><select id="scenario">
+              <option value="suite">All five checks</option>
+              <option value="clean">Clean playback</option>
+              <option value="duplicate">Duplicate update</option>
+              <option value="gap">Missing update</option>
+              <option value="pause">Stale stream</option>
+              <option value="disconnect">Disconnect and resubscribe</option>
+            </select>
+            <div class="row">
+              <div>
+                <label for="at">Fault frame</label
+                ><input id="at" type="number" min="2" value="3" />
+              </div>
+              <div>
+                <label for="speed">Replay speed</label
+                ><select id="speed">
+                  <option value="1">1× original timing</option>
+                  <option value="2">2× faster</option>
+                  <option value="10">10× faster</option>
+                </select>
+              </div>
+            </div>
+            <label for="pause">Pause duration in seconds</label
+            ><input
+              id="pause"
+              type="number"
+              min="0.1"
+              max="10"
+              step="0.1"
+              value="3"
+            />
+            <p class="hint">
+              Frame 1 is the snapshot. Faults target update frames. A 3-second
+              pause exceeds the example client’s 2-second receive timeout.
+            </p>
+            <div class="buttons">
+              <button class="btn primary" id="run">Run checks</button
+              ><button class="btn" id="replay">Start external replay</button>
+            </div>
+            <div class="endpoint" id="endpoint" hidden></div>
+            <hr class="rule" />
+            <h2>Bring your own capture</h2>
+            <p class="small">Import a Kraken v2 JSONL capture, up to 8 MiB.</p>
+            <label class="sr" for="file">Import capture</label
+            ><input
+              id="file"
+              type="file"
+              accept=".jsonl"
+              style="margin-top: 10px"
+            />
+            <details>
+              <summary>Record from Kraken’s public feed</summary>
+              <p class="hint">
+                Requires an internet connection. The recording is validated
+                before it becomes available. No API key is needed.
+              </p>
+              <div class="record">
+                <div>
+                  <label for="symbol">Symbol</label
+                  ><input id="symbol" value="BTC/USD" maxlength="32" />
+                </div>
+                <div>
+                  <label for="seconds">Seconds</label
+                  ><input
+                    id="seconds"
+                    type="number"
+                    min="1"
+                    max="30"
+                    value="10"
+                  />
+                </div>
+              </div>
+              <button class="btn" id="record" style="margin-top: 12px">
+                Record public feed
+              </button>
+            </details>
+          </section>
+          <div>
+            <section class="panel">
+              <div class="panelhead">
+                <h2><span class="step">2</span>Inspect the evidence</h2>
+                <button class="btn" id="download" disabled>Export JSON</button>
+              </div>
+              <p class="small" style="margin-bottom: 18px">
+                A detected checksum or stale-feed error counts as a passed check
+                when that rejection was expected.
+              </p>
+              <div class="tablewrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Scenario</th>
+                      <th>Check</th>
+                      <th>Observed behavior</th>
+                    </tr>
+                  </thead>
+                  <tbody id="results"></tbody>
+                </table>
+              </div>
+              <div class="empty" id="empty">
+                <div class="icon">▤</div>
+                <strong>No results yet</strong>
+                <p>Choose “All five checks” and select Run checks.</p>
+              </div>
+              <details>
+                <summary>Previous reports</summary>
+                <div class="history" id="history"></div>
+              </details>
+            </section>
+            <section class="panel" style="margin-top: 22px">
+              <div class="panelhead" style="margin-bottom: 5px">
+                <h2>Activity</h2>
+                <span class="small" style="color: var(--muted)"
+                  >Latest 100 events</span
+                >
+              </div>
+              <div
+                class="log"
+                id="log"
+                role="log"
+                aria-label="Test activity"
+              ></div>
+            </section>
+          </div>
+        </div>
+        <div class="footer">
+          <span
+            >Offline demo uses synthetic data. Public recordings retain their
+            captured content.</span
+          ><span
+            >Checksums verify book state; they cannot prove every event
+            arrived.</span
+          >
+        </div>
+      </main>
+    </div>
+    <script>
+      const token = document.querySelector(
+        'meta[name="feedtest-token"]',
+      ).content;
+      const $ = (id) => document.getElementById(id);
+      let state = null,
+        lastLog = "",
+        posting = false;
+      async function api(path, body, raw = false) {
+        const options = { headers: { "X-FeedTest-Token": token } };
+        if (body !== undefined) {
+          options.method = "POST";
+          if (raw) {
+            options.body = body;
+          } else {
+            options.headers["Content-Type"] = "application/json";
+            options.body = JSON.stringify(body);
+          }
+        }
+        const response = await fetch(path, options);
+        if (!response.ok) {
+          let text = await response.text();
+          try {
+            text = JSON.parse(text).error || text;
+          } catch {}
+          throw new Error(text);
+        }
+        return response;
+      }
+      function error(message) {
+        $("error").hidden = !message;
+        $("error").textContent = message || "";
+      }
+      function config() {
+        return {
+          capture: $("capture").value,
+          scenario: $("scenario").value,
+          at: Number($("at").value),
+          pause: Number($("pause").value),
+          speed: Number($("speed").value),
+        };
+      }
+      function captureInfo() {
+        if (!state) return;
+        const info = state.captures.find((c) => c.id === $("capture").value);
+        $("capture-meta").replaceChildren();
+        if (info) {
+          const title = document.createElement("strong");
+          title.textContent = info.symbol + " · " + info.name;
+          $("capture-meta").append(
+            title,
+            document.createTextNode(
+              info.frames +
+                " validated book frames · " +
+                info.bytes.toLocaleString() +
+                " bytes",
+            ),
+          );
+          $("framecount").textContent = info.frames;
+          $("source").textContent = info.source;
+          $("at").max = info.frames;
+        } else {
+          $("capture-meta").textContent = "No valid captures available.";
+          $("framecount").textContent = "—";
+        }
+      }
+      function controls() {
+        const busy = posting || Boolean(state?.operation);
+        for (const id of ["run", "replay", "record", "file"])
+          $(id).disabled = busy;
+        $("replay").disabled = busy || $("scenario").value === "suite";
+        $("download").disabled = !state?.last_report;
+      }
+      function render(next) {
+        state = next;
+        const selected = $("capture").value;
+        $("capture").replaceChildren();
+        for (const info of state.captures) {
+          const option = document.createElement("option");
+          option.value = info.id;
+          option.textContent = info.name;
+          $("capture").append(option);
+        }
+        if (state.captures.some((c) => c.id === selected))
+          $("capture").value = selected;
+        captureInfo();
+        $("activity").textContent = state.operation || "Ready";
+        $("replay-state").textContent = state.endpoint
+          ? "Listening"
+          : "Stopped";
+        $("endpoint").hidden = !state.endpoint;
+        $("endpoint").textContent = state.endpoint
+          ? "Point your own client at " + state.endpoint
+          : "";
+        const passed = state.results.filter(
+          (r) => r.status === "passed",
+        ).length;
+        $("passed").textContent = state.results.length
+          ? passed + " / " + state.results.length
+          : "—";
+        $("checks-note").textContent = state.results.length
+          ? "Expected behavior confirmed"
+          : "Run your first test suite";
+        $("empty").hidden = state.results.length > 0;
+        $("results").replaceChildren();
+        for (const row of state.results) {
+          const tr = document.createElement("tr");
+          for (const [i, value] of [
+            row.scenario,
+            row.status,
+            row.detail,
+          ].entries()) {
+            const td = document.createElement("td");
+            if (i === 1) {
+              const badge = document.createElement("span");
+              badge.className = value === "passed" ? "pass" : "fail";
+              badge.textContent = value;
+              td.append(badge);
+            } else {
+              td.textContent = value;
+            }
+            tr.append(td);
+          }
+          $("results").append(tr);
+        }
+        const logs = JSON.stringify(state.events);
+        if (logs !== lastLog) {
+          lastLog = logs;
+          $("log").replaceChildren();
+          for (const event of state.events) {
+            const line = document.createElement("div"),
+              time = document.createElement("time");
+            time.textContent = event.time.slice(11, 19);
+            line.append(time, document.createTextNode(event.message));
+            $("log").append(line);
+          }
+          $("log").scrollTop = $("log").scrollHeight;
+        }
+        $("history").replaceChildren();
+        for (const report of state.history) {
+          const button = document.createElement("button");
+          button.className = "btn";
+          button.textContent =
+            report.created + " · " + report.passed + "/" + report.total;
+          button.onclick = () => download(report.id);
+          $("history").append(button);
+        }
+        if (!state.history.length)
+          $("history").textContent = "Completed reports will appear here.";
+        controls();
+      }
+      async function refresh() {
+        try {
+          render(await (await api("/api/state")).json());
+          return true;
+        } catch (e) {
+          $("activity").textContent = "Disconnected";
+          error(e.message);
+          return false;
+        }
+      }
+      async function action(path, body, raw = false) {
+        posting = true;
+        controls();
+        error();
+        try {
+          await api(path, body, raw);
+          await refresh();
+        } catch (e) {
+          error(e.message);
+        } finally {
+          posting = false;
+          controls();
+        }
+      }
+      async function download(id) {
+        try {
+          const response = await api("/api/reports/" + encodeURIComponent(id));
+          const url = URL.createObjectURL(await response.blob());
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "feedtest-" + id + ".json";
+          a.click();
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+        } catch (e) {
+          error(e.message);
+        }
+      }
+      $("run").onclick = () => action("/api/run", config());
+      $("replay").onclick = () => action("/api/replay", config());
+      $("stop").onclick = () => action("/api/stop", {});
+      $("record").onclick = () =>
+        action("/api/record", {
+          symbol: $("symbol").value,
+          seconds: Number($("seconds").value),
+        });
+      $("download").onclick = () => download(state.last_report);
+      $("capture").onchange = captureInfo;
+      $("scenario").onchange = controls;
+      $("file").onchange = async () => {
+        const file = $("file").files[0];
+        if (file) {
+          await action("/api/upload", file, true);
+          $("file").value = "";
+        }
+      };
+      async function poll() {
+        await refresh();
+        setTimeout(poll, 800);
+      }
+      poll();
+    </script>
+  </body>
+</html>
